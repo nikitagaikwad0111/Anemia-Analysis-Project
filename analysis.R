@@ -495,12 +495,12 @@ table(M1$Anemia.level)
 # Proportion Table
 prop.table(table(M1$Anemia.level))*100
 # Bar plot
-barplot(table(M1$Anemia.level),main="Anemia.level",xlab="Anemia.level",ylab="count",las=1,col=rainbow(M1$Anemia.level))
-legend("topright",legend=names(table(M1$Anemia.level)),fill=rainbow(M1$Anemia.level))
+barplot(table(M1$Anemia.level),main="Anemia.level",xlab="Severity Level",ylab="count",las=1,col=c("red", "orange", "yellow", "green"))
+legend("topright",legend = c("Severe", "Moderate", "Mild", "Non-anemic"),fill=c("red", "orange", "yellow", "green"))
 # Pie chart
-pie(table(M1$Anemia.level),main="Anemia.level",col=rainbow(M1$Anemia.level))
-legend("topright",legend=names(table(M1$Anemia.level)),fill=rainbow(M1$Anemia.level))
-#cross tabulaton (Contingency table)
+pie(table(M1$Anemia.level),main="Anemia.level",col=c("red", "orange", "yellow", "green"))
+legend("topright",legend = c("Severe", "Moderate", "Mild", "Non-anemic"),fill=c("red", "orange", "yellow", "green"))
+#cross tabulation (Contingency table)
 table(M1$Anemia.level,M1$Total.children.ever.born)
 # Chi-square test of independence
 chisq.test(M1$Anemia.level,M1$Total.children.ever.born)
@@ -518,6 +518,73 @@ summary(M1$Anemia.level)
 
 
 #####----------------------------------------------------------------------------------------------------------------------------------------
+
+
+##PLOT FOR ANEMIC vs NON-ANEMIC
+
+##Remove Missing individuals data from Anemia levels
+m1= M1[M1$Anemia.level!=9,];m1
+
+m1$Anemia.level= ifelse(m1$Anemia.level==4, "Non-Anemic", "Anemic")
+
+counts= table(m1$Anemia.level)
+
+percent= prop.table(counts)*100
+
+pie(percent, main="Percentage of People with and without Anemia", col=c("salmon", "skyblue"))
+
+
+#### for Anemia prevalence by Type of Residence
+
+m1$Type.of.place.of.residence= factor(m1$Type.of.place.of.residence, levels= c(1,2), labels= c("Urban", "Rural"))
+
+
+table_data= table(m1$Type.of.place.of.residence, m1$Anemia.level)
+
+percent_data= prop.table(table_data,1)*100
+
+barplot(t(percent_data),beside= TRUE, col=c("salmon","skyblue"), legend= TRUE, main= "Anemia Prevalence by Place of Residence", xlab= "Place of Residence", ylab= "Percentage")
+
+
+##### Age Groups############------------------------------------------------------------------------------------------------------------------
+
+m1$Respondent.s.current.age= cut(m1$Respondent.s.current.age, breaks= c(0,5,15,25,40,60), labels= c("0-5", "6-15", "16-25", "26-40", "40+"), right= TRUE)
+
+tab_data= table(m1$Respondent.s.current.age, m1$Anemia.level)
+
+percent_data= prop.table(tab_data,1)*100
+
+par(mar = c(4, 4, 4, 2))
+barplot(t(percent_data), beside = TRUE, col = c("salmon", "skyblue"), names.arg = c("0-5", "6-15", "16-25", "26-40", "40+"), xlab = "Age Group", ylab = "Percentage", main = "Anemia Distribution by Age Group", legend.text = c("Anemic", "Non-Anemic"), args.legend = list(x = "topright"), xlim = c(1, 20))
+
+
+#############################----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+par(mar=c(8,4,4,10))
+tab= table(M1$Educational.attainment, M1$Anemia.level)
+prop_tab=prop.table(tab,1)
+
+
+prop_tab=t(prop_tab)
+barplot(prop_tab,col=c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),xlab="Education Level",ylab="Proportion", main="Education vs Anemia",names.arg=c("No Edu", "Inc Prim", "Comp Prim", "Inc Sec", "Comp Sec", "Higher"), las=1)
+legend("topright",legend = c("Severe", "Moderate", "Mild", "Non-anemic"),fill = c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),bty = "n")
+
+###########3---------------------------------------------------------------------
+
+
+
+par(mar=c(8,4,4,10))
+tab= table(M1$Type.of.place.of.residence, M1$Anemia.level)
+prop_tab=prop.table(tab,1)
+
+
+prop_tab=t(prop_tab)
+barplot(prop_tab,col=c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),xlab="Type of Residence",ylab="Proportion", main="Residence vs Anemia",names.arg=c("Urban", "Rural"), las=1)
+
+legend("topright",legend = c("Severe", "Moderate", "Mild", "Non-anemic"),fill = c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),bty = "n")
+
+
+###################################--------------------------------------------------------------------------------------------------------------------------------------
 
 
 #1) Chi-Square test if independence
@@ -764,32 +831,19 @@ for (var in chi_square_vars) {
 print(chi_square_results)
 
 
-##################-------------------------------------------------------------------------------------------------------
 
 
+##############---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+##############---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-par(mar=c(8,4,4,10))
-tab= table(M1$Educational.attainment, M1$Anemia.level.1)
-prop_tab=prop.table(tab,1)
+m1$Respondent.s.current.age= cut(m1$Respondent.s.current.age, breaks= c(0,5,15,25,40,60), labels= c("0-5", "6-15", "16-25", "26-40", "40+"), right= TRUE)
 
+tab_data= table(m1$Respondent.s.current.age, m1$Anemia.level)
 
-prop_tab=t(prop_tab)
-barplot(prop_tab,col=c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),xlab="Education Level",ylab="Proportion", main="Education vs Anemia",names.arg=c("No Edu", "Inc Prim", "Comp Prim", "Inc Sec", "Comp Sec", "Higher"), las=1)
-legend("topright",legend = c("Severe", "Moderate", "Mild", "Non-anemic"),fill = c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),bty = "n")
+percent_data= prop.table(tab_data,1)*100
 
-###########3---------------------------------------------------------------------
-
-
-
-par(mar=c(8,4,4,10))
-tab= table(M1$Type.of.place.of.residence, M1$Anemia.level.1)
-prop_tab=prop.table(tab,1)
-
-
-prop_tab=t(prop_tab)
-barplot(prop_tab,col=c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),xlab="Type of Residence",ylab="Proportion", main="Residence vs Anemia",names.arg=c("Urban", "Rural"), las=1)
-
-legend("topright",legend = c("Severe", "Moderate", "Mild", "Non-anemic"),fill = c("#4E79A7", "#F28E2B", "#E15759", "#76B7B2"),bty = "n")
+##par(mar = c(4, 4, 4, 2))
+barplot(t(percent_data), col=c("salmon", "skyblue"), names.arg=c("0-5", "6-15", "16-25", "26-40", "40+"),   main="Anemia Distribution by Age Group", xlab="Age Group", ylab="Percentage", legend.text=c("Anemic", "Non-Anemic"), args.legend = list(x="topright"), xlim=c(0,8) )
 
 
 
